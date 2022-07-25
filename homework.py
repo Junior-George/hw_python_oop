@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Type
 
 
 class InfoMessage:
@@ -27,9 +27,9 @@ class InfoMessage:
 
 class Training:
     """Базовый класс тренировки."""
-    LEN_STEP = 0.65
-    M_IN_KM = 1000
-    M_IN_HOUR = 60
+    LEN_STEP: float = 0.65
+    M_IN_KM: int = 1000
+    M_IN_HOUR: int = 60
 
     def __init__(self,
                  action: int,
@@ -51,8 +51,6 @@ class Training:
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         raise NotImplementedError()
-        print('Переопределите метод get_spent_calories '
-              'в self.__class__.__name__')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -121,11 +119,13 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    dictionary: Dict[str, str] = {'SWM': Swimming,
-                                  'RUN': Running,
-                                  'WLK': SportsWalking}
+    dictionary: Dict[str, Type[Training]] = {'SWM': Swimming,
+                                             'RUN': Running,
+                                             'WLK': SportsWalking}
     if workout_type in dictionary:
         return dictionary[workout_type](*data)
+    else:
+        raise Exception('Такой тренировки нет в базе данных')
 
 
 def main(training: Training) -> None:
